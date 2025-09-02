@@ -1,0 +1,53 @@
+base_image:
+  image: vllm/vllm-openai:v0.9.1
+build_commands:
+- git clone https://github.com/rednote-hilab/dots.ocr.git /app
+- cd /app && pip install -r requirements.txt
+- cd /app && pip install -e .
+- chmod +x /app/startup.sh
+docker_server:
+  liveness_endpoint: /health
+  predict_endpoint: /v1/completions
+  readiness_endpoint: /health
+  server_port: 8000
+  start_command: /app/startup.sh
+environment_variables:
+  PYTHONPATH: /app/weights:$PYTHONPATH
+  hf_access_token: None
+model_metadata:
+  engine_args:
+    chat_template_content_format: string
+    gpu_memory_utilization: 0.95
+    model: ./weights/DotsOCR
+    tensor_parallel_size: 1
+    trust_remote_code: true
+  example_model_input:
+    max_tokens: 2048
+    messages:
+    - content: You are a helpful OCR assistant that can extract text and layout information
+        from images.
+      role: system
+    - content: Extract the text content from this image.
+      role: user
+    stream: true
+    temperature: 0.1
+model_name: dots.ocr
+requirements:
+- torch
+- transformers
+- pillow
+- numpy
+python_version: py39
+resources:
+  accelerator: A10G
+  cpu: '1'
+  memory: 2Gi
+  use_gpu: true
+runtime:
+  is_websocket_endpoint: false
+  predict_concurrency: 256
+  transport:
+    kind: http
+system_packages:
+- python3-pip
+- git
