@@ -1,7 +1,7 @@
 base_image:
   image: vllm/vllm-openai:v0.9.1
 build_commands:
-- git clone https://github.com/rednote-hilab/dots.ocr.git /app
+- git clone https://github.com/tobalo/dots.ocr.truss.git /app
 - cd /app && pip install -r requirements.txt
 - cd /app && pip install -e .
 - chmod +x /app/startup.sh
