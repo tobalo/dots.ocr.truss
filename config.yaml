@@ -39,8 +39,8 @@ requirements:
 - numpy
 python_version: py39
 resources:
-  accelerator: A10G
-  cpu: '1'
+  accelerator: A100
+  cpu: '2'
   memory: 2Gi
   use_gpu: true
 runtime:
